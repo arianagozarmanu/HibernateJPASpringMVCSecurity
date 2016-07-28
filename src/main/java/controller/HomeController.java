@@ -295,7 +295,6 @@ public class HomeController {
 	// aditional methods
 	// realizare string cu autoritatile user-ului
 	private String getAuthorities(SecurityContextHolderAwareRequestWrapper request) {
-		String s="Am incercat branching pe git";
 		String authorities=" ";
 		if (request.isUserInRole("ROLE_ADMIN")) {
 			authorities = " Administrator ";
