@@ -1,20 +1,12 @@
 package dao;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import mapper.UserRowMapper;
-import model.Product;
 import model.User;
 
 @Repository(value = "userDaoImpl")
@@ -23,11 +15,9 @@ public class UserDaoImpl implements UserDao {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	public void add(User user) {
@@ -35,14 +25,12 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	public void addRole(String username, String role) {
-		String sql = "INSERT INTO user_roles(username, role ) VALUES (?,?)";
-
-		jdbcTemplate.update(sql, new Object[] { username, role });
 		
-//		int rows = entityManager
-//				.createNativeQuery("DELETE FROM users WHERE idusers='"+id+"'")
-//				.executeUpdate();
-//		System.out.println(rows + " row(s) updated with new data in User Table.");
+		Query q = entityManager
+				.createNativeQuery("INSERT INTO user_roles(username, role ) VALUES (?,?)");
+		q.setParameter(1, username);
+		q.setParameter(2, role);
+		q.executeUpdate();
 
 		System.out.println("User with username=" + username + " was insterted with ROLE_USER");
 	}
