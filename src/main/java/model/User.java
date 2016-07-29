@@ -2,24 +2,37 @@ package model;
 
 import java.io.Serializable;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="users")
 public class User implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name="idusers", nullable=false)
 	private int iduders;
+	@Column(name="username", nullable=false)
 	private String username;
+	@Column(name="password", nullable=false)
 	private String password;
-	private boolean enabled;
+	@Column(name="enabled", nullable=false)
+	private int enabled;
+	@Column(name="email", nullable=false)
 	private String email;
+	@Column(name="age", nullable=false)
 	private int age;
+	@Column(name="lastOperationDate", nullable=true)
 	private java.util.Date lastOperationDate; 
 
 	public User(){
 	}
 	
-	public User(int iduders, String username, String password, boolean enabled, String email, int age, java.util.Date date) {
+	public User(int iduders, String username, String password, int enabled, String email, int age, java.util.Date date) {
 		this.iduders = iduders;
 		this.username = username;
 		this.password = password;
@@ -55,10 +68,10 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public boolean isEnabled() {
+	public int isEnabled() {
 		return enabled;
 	}
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(int enabled) {
 		this.enabled = enabled;
 	}
 	public String getEmail() {

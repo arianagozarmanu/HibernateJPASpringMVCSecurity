@@ -14,6 +14,6 @@ public interface UserDao {
 	public User findById(int id);
 	public List<User> findAll();
 	public void deleteById(int id);
-	public User findByName(String name);
-	public void update(int iduders, String username, String password, boolean enabled, String email, int age);
+	public User findByName(String username);
+	public void update(int iduders, String username, String password, int enabled, String email, int age);
 }

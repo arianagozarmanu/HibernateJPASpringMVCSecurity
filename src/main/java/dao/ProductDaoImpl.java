@@ -3,20 +3,22 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.*;
+import javax.persistence.criteria.*;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import mapper.ProductRowMapper;
 import model.Product;
 
 @Repository(value="productDaoImpl")
 public class ProductDaoImpl implements ProductDao {
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	private JdbcTemplate jdbcTemplate;
 	
@@ -26,13 +28,7 @@ public class ProductDaoImpl implements ProductDao {
 	}
 	
 	public void add(Product product) {
-		String sql = "INSERT INTO products(idproduct, name, price, iduser) VALUES (?,?,?,?)";
-
-		jdbcTemplate.update(sql,
-				new Object[] { product.getIdproduct(), product.getName(), product.getPrice(), product.getIduser() });
-
-		System.out.println("Product with id=" + product.getIdproduct() + " was insterted");
-
+		entityManager.persist(product);
 	}
 
 	public void deleteById(Product product) {
@@ -78,23 +74,12 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	public List<Product> findAll() {
-		String sql = " SELECT * FROM products";
-
-		List<Product> products = new ArrayList<Product>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-
-		for (Map row : rows) {
-			Product prod = new Product();
-			prod.setIdproduct(Integer.parseInt(String.valueOf(row.get("idproduct"))));
-			prod.setName((String) row.get("name"));
-			prod.setPrice(Double.parseDouble(String.valueOf(row.get("price"))));
-			prod.setIduser(Integer.parseInt(String.valueOf(row.get("iduser"))));
-			products.add(prod);
-		}
-
-		return products;
-	}
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+	    CriteriaQuery<Product> cq = builder.createQuery(Product.class);
+	    Root<Product> root = cq.from(Product.class);
+	    cq.select(root);
+	    return entityManager.createQuery(cq).getResultList();
+	  }
 
 
 }

@@ -39,21 +39,21 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		userDaoImpl.deleteById(id);
 	}
-
+	
 	public User findUserByName(String name) {
 		// TODO Auto-generated method stub
 		return userDaoImpl.findByName(name);
 	}
 
-	public void updateUser(int iduders, String username, String password, boolean enabled, String email, int age) {
+	public void updateUser(int iduders, String username, String password, int enabled, String email, int age) {
 		// TODO Auto-generated method stub
 		userDaoImpl.update(iduders, username, password, enabled, email, age);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void registerUser(User user) {
 		Set<Integer> usersIds = getUsersIds(userDaoImpl.findAll());
-		user.setEnabled(true);
+		user.setEnabled(1);
 		user.setIduders((Integer)usersIds.toArray()[usersIds.size()-1]+1);
 		user.setLastOperationDate(serviceUtils.getCurrentDate());
 		userDaoImpl.add(user);

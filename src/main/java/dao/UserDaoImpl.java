@@ -3,6 +3,9 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.*;
+import javax.persistence.criteria.*;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,106 +14,95 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import mapper.UserRowMapper;
+import model.Product;
 import model.User;
 
 @Repository(value = "userDaoImpl")
 public class UserDaoImpl implements UserDao {
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
-	
+
 	public void add(User user) {
-		String sql = "INSERT INTO users(idusers, username, password, enabled, email, age, lastOperationDate ) VALUES (?,?,?,?,?,?,?)";
-
-		int enabled = 0;
-		if (user.isEnabled() == true)
-			enabled = 1;
-
-		jdbcTemplate.update(sql, new Object[] { user.getIduders(), user.getUsername(), user.getPassword(), enabled,
-				user.getEmail(), user.getAge(), user.getLastOperationDate() });
-
-		System.out.println("User with id=" + user.getIduders() + " was insterted");
-
+		entityManager.persist(user);
 	}
-	
+
 	public void addRole(String username, String role) {
 		String sql = "INSERT INTO user_roles(username, role ) VALUES (?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { username, role });
+		
+//		int rows = entityManager
+//				.createNativeQuery("DELETE FROM users WHERE idusers='"+id+"'")
+//				.executeUpdate();
+//		System.out.println(rows + " row(s) updated with new data in User Table.");
 
 		System.out.println("User with username=" + username + " was insterted with ROLE_USER");
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	public User findById(int id) {
-		String sql = "SELECT * FROM users WHERE idusers=?";
-
-		User user = (User) jdbcTemplate.queryForObject(sql, new Object[] { id }, new UserRowMapper());
-
+		User user = entityManager.find(User.class, id);
 		return user;
+	
 	}
+	
 
-	@SuppressWarnings({ "unchecked" })
 	public User findByName(String name) {
-		String sql = "SELECT * FROM users WHERE username=?";
-
-		User user = (User) jdbcTemplate.queryForObject(sql, new Object[] { name }, new UserRowMapper());
-
-		return user;
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<User> cq = builder.createQuery(User.class);
+		Root<User> root = cq.from(User.class);
+		cq.select(root);
+		cq.where(builder.equal(root.get("username"),name));
+		
+		Object result = null;
+		
+		try{
+			result = entityManager.createQuery(cq).getSingleResult();
+			return (User)result;
+		} catch(NoResultException e){
+			return null;
+		}
 	}
 
 	public List<User> findAll() {
-		String sql = " SELECT * FROM users";
-
-		List<User> users = new ArrayList<User>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-
-		for (Map row : rows) {
-			User user = new User();
-			user.setIduders(Integer.parseInt(String.valueOf(row.get("idusers"))));
-			user.setUsername((String) row.get("username"));
-			user.setPassword((String) row.get("password"));
-			user.setEmail((String) row.get("email"));
-			user.setAge(Integer.parseInt(String.valueOf(row.get("age"))));
-			users.add(user);
-		}
-
-		return users;
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<User> cq = builder.createQuery(User.class);
+		Root<User> root = cq.from(User.class);
+		cq.select(root);
+		return entityManager.createQuery(cq).getResultList();
 	}
 
 	public void deleteById(int id) {
-		String sql = " DELETE FROM users WHERE idusers=?";
 
-		Object[] params = { id };
+		int rows = entityManager
+				.createNativeQuery("DELETE FROM users WHERE idusers='"+id+"'")
+				.executeUpdate();
+		System.out.println(rows + " row(s) updated with new data in User Table.");
 
-		int rows = jdbcTemplate.update(sql, params);
-		System.out.println(rows + " row(s) deleted.");
+	}
+
+	public void update(int iduders, String username, String password, int enabled, String email, int age) {
+
+		int rows = entityManager
+				.createNativeQuery(
+						"UPDATE users SET username='" + username + "', password='" + password + "', enabled='" + enabled
+								+ "', email='" + email + "', age='" + age + "' WHERE idusers='" + iduders + "'")
+				.executeUpdate();
+		System.out.println(rows + " row(s) updated with new data in User Table.");
 
 	}
 
-	public void update(int iduders, String username, String password, boolean enabled, String email, int age) {
-		String sql = "UPDATE users SET username=?, password=?, enabled=?, email=?, age=? WHERE idusers=?";
-
-		int enable = 0;
-		if (enabled = true)
-			enable = 1;
-
-		Object[] params = { username, password, enable, email, age, iduders };
-
-		int rows = jdbcTemplate.update(sql, params);
-		System.out.println(rows + " row(s) updated in User Table.");
-
-	}
-	
 	public void insertLastActionDate(java.util.Date date, int id) {
-		String sql = "UPDATE users SET lastOperationDate=? WHERE idusers=?";
-
-		int rows = jdbcTemplate.update(sql, new Object[] {date, id });
+		int rows = entityManager
+				.createNativeQuery("UPDATE users SET lastOperationDate='" + date + "' WHERE idusers='" + id + "'")
+				.executeUpdate();
 		System.out.println(rows + " row(s) updated with new data in User Table.");
 	}
 

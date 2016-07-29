@@ -13,7 +13,7 @@
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
-	<tx:annotation-driven transaction-manager="txManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
@@ -28,15 +28,26 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
-	<!-- Transaction object -->
+	<!-- Transaction object
 	<beans:bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<beans:property name="dataSource" ref="dataSource" />
 	</beans:bean>
-
+	 -->
+	 
 	<!-- Package to my controller -->
 	<context:component-scan base-package="controller, dao, mapper, model" />
 	<context:component-scan base-package="service" />
 
+	<beans:bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<beans:property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+		<beans:property name="persistenceUnitName" value="testPU" />
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+
+	<beans:bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+	</beans:bean>
 
 </beans:beans>
