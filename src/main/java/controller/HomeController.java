@@ -4,8 +4,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -26,7 +28,8 @@ public class HomeController {
 	private UserService userServiceImpl;
 	
 	@Autowired
-	private ProductService productServiceImpl;	
+	private ProductService productServiceImpl;
+
 	
 	// registration
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
@@ -114,7 +117,7 @@ public class HomeController {
 		String name = authentication.getName();
 		User user = userServiceImpl.findUserByName(name);
 		Product product = productServiceImpl.findProductById(id);
-
+		
 		try {
 			productServiceImpl.deleteProductById(product, user);
 			redirectAttrs.addFlashAttribute("successAddingProduct", "Your product was successfully deleted!");

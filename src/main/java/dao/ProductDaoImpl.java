@@ -1,17 +1,11 @@
 package dao;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import mapper.ProductRowMapper;
 import model.Product;
 
 @Repository(value="productDaoImpl")
@@ -19,12 +13,9 @@ public class ProductDaoImpl implements ProductDao {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
-	public void setDataSource(DataSource dataSource) {
-		jdbcTemplate = new JdbcTemplate(dataSource);		
+	public void setDataSource(DataSource dataSource) {	
 	}
 	
 	public void add(Product product) {
@@ -32,45 +23,47 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	public void deleteById(Product product) {
-		String sql = "DELETE FROM products WHERE idproduct=?";
-	
-		int rows= jdbcTemplate.update(sql, new Object[] {product.getIdproduct()});
+		
+		int rows = entityManager
+				.createNativeQuery("DELETE FROM products WHERE idproduct='"+product.getIdproduct()+"'")
+				.executeUpdate();
 		System.out.println(rows + " row(s) deleted in Product Table.");
 	}
 
 	public void update(Product product) {
-		String sql = "UPDATE products SET name=?, price=?, iduser=? WHERE idproduct=?";
+		
+		int rows = entityManager
+				.createNativeQuery(
+						"UPDATE products SET name='" + product.getName() + "', price='" + product.getPrice() + "', iduser='" + product.getIduser()
+								+ "' WHERE idproduct='" + product.getIdproduct() + "'")
+				.executeUpdate();
 
-		int rows = jdbcTemplate.update(sql, new Object[] { product.getName(), product.getPrice(), product.getIduser(), product.getIdproduct() });
 		System.out.println(rows + " row(s) updated in Product Table.");
 
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	public Product findById(int id) {
-		String sql = "SELECT * FROM products WHERE idproduct=?";
 
-		Product product = (Product) jdbcTemplate.queryForObject(sql, new Object[] { id }, new ProductRowMapper());
+	public Product findById(int  idproduct) {
+
+		Product product = entityManager.find(Product.class,  idproduct);
 
 		return product;
 	}
 
 	public List<Product> findByUserId(int id) {
-		String sql = "SELECT * FROM products";
-
-		List<Product> products = new ArrayList<Product>();
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-		for (Map row : rows) {
-			Product prod = new Product();
-			prod.setIdproduct(Integer.parseInt(String.valueOf(row.get("idproduct"))));
-			prod.setName((String) row.get("name"));
-			prod.setPrice(Double.parseDouble(String.valueOf(row.get("price"))));
-			prod.setIduser(Integer.parseInt(String.valueOf(row.get("iduser"))));
-			if (prod.getIduser() == id)
-				products.add(prod);
+		
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Product> cq = builder.createQuery(Product.class);
+		Root<Product> root = cq.from(Product.class);
+		cq.select(root);
+		cq.where(builder.equal(root.get("iduser"),id));
+		
+		try{
+			return entityManager.createQuery(cq).getResultList();
+		} catch(NoResultException e){
+			return null;
 		}
 
-		return products;
 	}
 
 	public List<Product> findAll() {

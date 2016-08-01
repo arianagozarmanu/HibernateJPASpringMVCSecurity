@@ -72,7 +72,7 @@ public class UserDaoImpl implements UserDao {
 		int rows = entityManager
 				.createNativeQuery("DELETE FROM users WHERE idusers='"+id+"'")
 				.executeUpdate();
-		System.out.println(rows + " row(s) updated with new data in User Table.");
+		System.out.println(rows + " row(s) deleted in User Table.");
 
 	}
 

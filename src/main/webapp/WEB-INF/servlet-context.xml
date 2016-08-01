@@ -28,12 +28,6 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
-	<!-- Transaction object -->
-	<beans:bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<beans:property name="dataSource" ref="dataSource" />
-	</beans:bean>
-	
 	
 	<!-- Package to my controller -->
 	<context:component-scan base-package="controller, dao, mapper, model" />
@@ -45,8 +39,8 @@
 		<beans:property name="persistenceUnitName" value="testPU" />
 		<beans:property name="dataSource" ref="dataSource" />
 	</beans:bean>
-
-	<beans:bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+  
+	<beans:bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
 	</beans:bean>
 
