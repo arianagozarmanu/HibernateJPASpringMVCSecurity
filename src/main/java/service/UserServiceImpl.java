@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import javax.transaction.Transactional;
 
 import dao.UserDao;
 import model.User;
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService{
 		userDaoImpl.update(iduders, username, password, enabled, email, age);
 	}
 
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackOn = Exception.class)
 	public void registerUser(User user) {
 		Set<Integer> usersIds = getUsersIds(userDaoImpl.findAll());
 		user.setEnabled(1);

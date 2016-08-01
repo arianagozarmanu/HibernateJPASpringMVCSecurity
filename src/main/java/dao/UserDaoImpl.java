@@ -41,7 +41,6 @@ public class UserDaoImpl implements UserDao {
 	
 	}
 	
-
 	public User findByName(String name) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<User> cq = builder.createQuery(User.class);

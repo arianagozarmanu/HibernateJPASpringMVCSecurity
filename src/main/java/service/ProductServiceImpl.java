@@ -2,16 +2,11 @@ package service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+
 
 import dao.*;
 import model.*;
@@ -26,19 +21,19 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	UserDao userDaoImpl;
 
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackOn = Exception.class)
 	public void addProduct(Product product, User user) {
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
 		productDaoImpl.add(product);
 	}
 
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteProductById(Product product, User user) {
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
 		productDaoImpl.deleteById(product);
 	}
 
-	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackOn = Exception.class)
 	public void updateProduct(Product product, User user) {
 		// TODO Auto-generated method stub
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
