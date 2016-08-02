@@ -33,23 +33,19 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional(rollbackFor = Exception.class)
 	public void updateProduct(Product product, User user) {
-		// TODO Auto-generated method stub
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
 		productDaoImpl.update(product);
 	}
 
 	public Product findProductById(int id) {
-		// TODO Auto-generated method stub
 		return productDaoImpl.findById(id);
 	}
 
 	public List<Product> findProductsByUserId(int id) {
-		// TODO Auto-generated method stub
 		return productDaoImpl.findByUserId(id);
 	}
 
 	public List<Product> findAllProducts() {
-		// TODO Auto-generated method stub
 		return productDaoImpl.findAll();
 	}
 
