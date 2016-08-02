@@ -15,7 +15,6 @@ public class UserDaoImpl implements UserDao {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 	}
