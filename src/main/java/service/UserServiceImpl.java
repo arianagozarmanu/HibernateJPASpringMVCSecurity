@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService{
 		return userDaoImpl.findByName(name);
 	}
 
-	public void updateUser(int iduders, String username, String password, boolean enabled, String email, int age) {
+	public void updateUser(int iduders, String username, String password, int enabled, String email, int age) {
 		// TODO Auto-generated method stub
 		userDaoImpl.update(iduders, username, password, enabled, email, age);
 	}

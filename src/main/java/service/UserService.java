@@ -12,7 +12,7 @@ public interface UserService {
 	public List<User> findAllUsers();
 	public void deleteUserById(int id);
 	public User findUserByName(String name);
-	public void updateUser(int iduders, String username, String password, boolean enabled, String email, int age);
+	public void updateUser(int iduders, String username, String password, int enabled, String email, int age);
 	public void registerUser(User user);
 	public Set<Integer> getUsersIds(List<User> users);
 }

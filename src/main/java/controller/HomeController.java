@@ -308,12 +308,10 @@ public class HomeController {
 
 	// Validari
 	private boolean usernameIsValid(String username){
-		try{
-			userServiceImpl.findUserByName(username);
-			return false;
-		} catch(EmptyResultDataAccessException e){
+		System.out.println(userServiceImpl.findUserByName(username));
+		if(userServiceImpl.findUserByName(username)==null){
 			return true;
-		}
+		} else return false;
 	}
 	
 	private boolean emailIsValid(String email){

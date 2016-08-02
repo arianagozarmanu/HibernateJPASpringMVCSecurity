@@ -62,12 +62,9 @@ public class ProductServiceImpl implements ProductService {
 
 
 	public boolean productIdIsUsed(Product product) {
-		try{
-			productDaoImpl.findById(product.getIdproduct());
-			return true;
-		}catch(EmptyResultDataAccessException e){
-			return false;
-		}
+			if(productDaoImpl.findById(product.getIdproduct())==null)
+					return false;
+			else return true;
 	}
 
 }
