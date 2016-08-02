@@ -27,9 +27,7 @@ public class UserDaoImpl implements UserDao {
 	public void add(User user) {
 		String sql = "INSERT INTO users(idusers, username, password, enabled, email, age, lastOperationDate ) VALUES (?,?,?,?,?,?,?)";
 
-		int enabled = 0;
-		if (user.isEnabled() == true)
-			enabled = 1;
+		int enabled = 1;
 
 		jdbcTemplate.update(sql, new Object[] { user.getIduders(), user.getUsername(), user.getPassword(), enabled,
 				user.getEmail(), user.getAge(), user.getLastOperationDate() });

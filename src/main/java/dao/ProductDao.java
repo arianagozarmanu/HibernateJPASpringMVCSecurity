@@ -6,7 +6,7 @@ import model.Product;
 
 public interface ProductDao {
 	
-	public void save(Product product);
+	public void persist(Product product);
 	public Product findById(int id);
 	public List<Product> list();
 	public void deleteById(Product product);

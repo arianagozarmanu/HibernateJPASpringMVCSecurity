@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService{
 	@Transactional
 	public void registerUser(User user) {
 		Set<Integer> usersIds = getUsersIds(userDaoImpl.findAll());
-		user.setEnabled(true);
+		user.setEnabled(1);
 		user.setIduders((Integer)usersIds.toArray()[usersIds.size()-1]+1);
 		user.setLastOperationDate(serviceUtils.getCurrentDate());
 		userDaoImpl.add(user);

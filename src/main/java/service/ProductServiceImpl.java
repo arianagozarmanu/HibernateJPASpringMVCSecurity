@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional(rollbackFor = Exception.class)
 	public void addProduct(Product product, User user) {
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
-		productDaoImpl.save(product);		
+		productDaoImpl.persist(product);		
 	}
 
 

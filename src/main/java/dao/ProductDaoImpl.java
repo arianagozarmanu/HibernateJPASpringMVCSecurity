@@ -9,48 +9,48 @@ import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import mapper.ProductRowMapper;
 import model.Product;
 
-
-@Repository(value="productDaoImpl")
+@Repository(value = "productDaoImpl")
+@Transactional
 public class ProductDaoImpl implements ProductDao {
 
 	private JdbcTemplate jdbcTemplate;
 
+	@Autowired
 	private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-    
+	protected Session getSession() {
+		return sessionFactory.getCurrentSession();
+	}
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
-		jdbcTemplate = new JdbcTemplate(dataSource);		
+		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
-	
-	public void save(Product product) {
-		String sql = "INSERT INTO products(idproduct, name, price, iduser) VALUES (?,?,?,?)";
 
-		jdbcTemplate.update(sql,
-				new Object[] { product.getIdproduct(), product.getName(), product.getPrice(), product.getIduser() });
-
-		System.out.println("Product with id=" + product.getIdproduct() + " was insterted");
-
+	public void persist(Product product) {
+		getSession().persist(product);
+		System.out.println("Product " + product.getName() + " was added!");
 	}
 
 	public void deleteById(Product product) {
-		String sql = "DELETE FROM products WHERE idproduct=?";
-	
-		int rows= jdbcTemplate.update(sql, new Object[] {product.getIdproduct()});
-		System.out.println(rows + " row(s) deleted in Product Table.");
+		getSession().delete(product);
+		System.out.println("Product " + product.getName() + " was deleted!");
 	}
 
 	public void update(Product product) {
+		Query query = getSession().createQuery("UPDATE products SET name= ");
+		query.setParameter("stockName", "DIALOG1");
+		query.setParameter("stockCode", "7277");
+		int result = query.executeUpdate();
 		String sql = "UPDATE products SET name=?, price=?, iduser=? WHERE idproduct=?";
 
-		int rows = jdbcTemplate.update(sql, new Object[] { product.getName(), product.getPrice(), product.getIduser(), product.getIdproduct() });
+		int rows = jdbcTemplate.update(sql,
+				new Object[] { product.getName(), product.getPrice(), product.getIduser(), product.getIdproduct() });
 		System.out.println(rows + " row(s) updated in Product Table.");
 
 	}
@@ -82,14 +82,12 @@ public class ProductDaoImpl implements ProductDao {
 		return products;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Product> list() {
-    	@SuppressWarnings("unchecked")
-        List<Product> listProducts = (List<Product>) sessionFactory.getCurrentSession()
-                .createCriteria(Product.class)
-                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
- 
-        return listProducts;
-	}
+		List<Product> listProducts = (List<Product>) sessionFactory.getCurrentSession().createCriteria(Product.class)
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
+		return listProducts;
+	}
 
 }

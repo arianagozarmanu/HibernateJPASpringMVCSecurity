@@ -8,15 +8,15 @@ import javax.persistence.*;
 @Table(name="products")
 public class Product implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name="idproduct")
+	@Column(name="idproduct", nullable=false)
 	private int idproduct;
+	@Column(name="name", nullable=false)
 	private String name;
+	@Column(name="price", nullable=false)
 	private double price;
+	@Column(name="iduser", nullable=false)
 	private int iduser;
 	
 	public Product(){
