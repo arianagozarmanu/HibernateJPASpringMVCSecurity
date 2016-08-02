@@ -6,9 +6,9 @@ import model.Product;
 
 public interface ProductDao {
 	
-	public void add(Product product);
+	public void save(Product product);
 	public Product findById(int id);
-	public List<Product> findAll();
+	public List<Product> list();
 	public void deleteById(Product product);
 	public void update(Product product);
 	public List<Product> findByUserId(int id);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 
+import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,17 +13,24 @@ import org.springframework.stereotype.Repository;
 import mapper.ProductRowMapper;
 import model.Product;
 
+
 @Repository(value="productDaoImpl")
 public class ProductDaoImpl implements ProductDao {
 
 	private JdbcTemplate jdbcTemplate;
-	
+
+	private SessionFactory sessionFactory;
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+    
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		jdbcTemplate = new JdbcTemplate(dataSource);		
 	}
 	
-	public void add(Product product) {
+	public void save(Product product) {
 		String sql = "INSERT INTO products(idproduct, name, price, iduser) VALUES (?,?,?,?)";
 
 		jdbcTemplate.update(sql,
@@ -74,23 +82,13 @@ public class ProductDaoImpl implements ProductDao {
 		return products;
 	}
 
-	public List<Product> findAll() {
-		String sql = " SELECT * FROM products";
-
-		List<Product> products = new ArrayList<Product>();
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql);
-
-		for (Map row : rows) {
-			Product prod = new Product();
-			prod.setIdproduct(Integer.parseInt(String.valueOf(row.get("idproduct"))));
-			prod.setName((String) row.get("name"));
-			prod.setPrice(Double.parseDouble(String.valueOf(row.get("price"))));
-			prod.setIduser(Integer.parseInt(String.valueOf(row.get("iduser"))));
-			products.add(prod);
-		}
-
-		return products;
+	public List<Product> list() {
+    	@SuppressWarnings("unchecked")
+        List<Product> listProducts = (List<Product>) sessionFactory.getCurrentSession()
+                .createCriteria(Product.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+ 
+        return listProducts;
 	}
 
 

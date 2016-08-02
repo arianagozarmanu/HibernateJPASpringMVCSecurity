@@ -2,12 +2,18 @@ package model;
 
 import java.io.Serializable;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="users")
 public class User implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@Id
+	@Column(name="idusers")
 	private int iduders;
 	private String username;
 	private String password;

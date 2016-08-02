@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional(rollbackFor = Exception.class)
 	public void addProduct(Product product, User user) {
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
-		productDaoImpl.add(product);		
+		productDaoImpl.save(product);		
 	}
 
 
@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
 	public List<Product> findAllProducts() {
 		// TODO Auto-generated method stub
-		return productDaoImpl.findAll();
+		return productDaoImpl.list();
 	}
 
 
