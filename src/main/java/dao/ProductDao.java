@@ -11,5 +11,5 @@ public interface ProductDao {
 	public List<Product> list();
 	public void deleteById(Product product);
 	public void update(Product product);
-	public List<Product> findByUserId(int iduser);
+	//public List<Product> findByUserId(int iduser);
 }

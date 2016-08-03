@@ -4,8 +4,6 @@ import java.util.List;
 
 import model.User;
 
-
-
 public interface UserDao {
 	
 	public void add(User user);

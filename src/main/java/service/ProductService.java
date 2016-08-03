@@ -11,7 +11,7 @@ public interface ProductService {
 	public void deleteProductById(Product product, User user);
 	public void updateProduct(Product product, User user) ;
 	public Product findProductById(int id);
-	public List<Product> findProductsByUserId(int id);
+	//public List<Product> findProductsByUserId(int id);
 	public List<Product> findAllProducts();
 	public boolean productIdIsUsed(Product product);
 }

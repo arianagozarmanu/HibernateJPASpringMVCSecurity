@@ -15,7 +15,7 @@
 </head>
 <body background="<c:url value='/resources/images/back.jpg'/>">
 
-
+<!-- can change this -->
 <div align="center"  class="box">
         <form:form action="register" method="post" commandName="productForm">
             <table border="0">
@@ -33,10 +33,6 @@
                 <tr>
                     <td>Price:</td>
                     <td><form:input path="price" style="margin-bottom:10px; margin-top:10px"/></td>
-                </tr>
-                <tr>
-                    <td>User ID:</td>
-                    <td><form:select path="iduser" items="${userids}" style="margin-bottom:10px;  margin-top:10px"/></td>
                 </tr>
                 <tr>
                     <td colspan="2" align="center" ><input type="submit" value="Add Product" 

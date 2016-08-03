@@ -1,16 +1,13 @@
 package model;
 
 import java.io.Serializable;
-
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
 @Table(name="users")
 public class User implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -28,7 +25,10 @@ public class User implements Serializable{
 	private int age;
 	@Column(name="lastOperationDate", nullable=true)
 	private java.util.Date lastOperationDate; 
-
+	
+	@OneToMany(mappedBy="user")
+	private List<Product> products;
+	
 	public User(){
 	}
 	
@@ -41,7 +41,14 @@ public class User implements Serializable{
 		this.age = age;
 		this.lastOperationDate=date;
 	}
-
+	
+    public List<Product> getProducts() {
+        return products;
+    }
+ 
+    public void setAccounts(List<Product> products) {
+        this.products = products;
+    }
 	public java.util.Date getLastOperationDate() {
 		return lastOperationDate;
 	}

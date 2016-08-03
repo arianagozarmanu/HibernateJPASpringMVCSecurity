@@ -5,54 +5,63 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name="products")
+@Table(name = "products")
 public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name="idproduct", nullable=false)
+	@Column(name = "idproduct", nullable = false)
 	private int idproduct;
-	@Column(name="name", nullable=false)
+	@Column(name = "name", nullable = false)
 	private String name;
-	@Column(name="price", nullable=false)
+	@Column(name = "price", nullable = false)
 	private double price;
-	@Column(name="iduser", nullable=false)
-	private int iduser;
-	
-	public Product(){
+
+	@ManyToOne
+	@JoinColumn(name="iduser", nullable=false)
+	private User user;
+
+	public Product() {
 	}
-	
-	public Product(int idprod, String name, double price, int iduser){
-		this.idproduct=idprod;
-		this.name=name;
-		this.price=price;
-		this.iduser=iduser;		
+
+	public Product(int idprod, String name, double price, User user) {
+		this.idproduct = idprod;
+		this.name = name;
+		this.price = price;
+		this.user = user;
 	}
-	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public int getIdproduct() {
 		return idproduct;
 	}
+
 	public void setIdproduct(int idproduct) {
 		this.idproduct = idproduct;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public double getPrice() {
 		return price;
 	}
+
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	public int getIduser() {
-		return iduser;
-	}
-	public void setIduser(int iduser) {
-		this.iduser = iduser;
-	}
 	
-	
+
 }

@@ -35,7 +35,7 @@
 					Date: </b>${user.getLastOperationDate()}</span>
 		</div>
 		<br />
-		<c:if test="${fn:contains(authorities,'Administrator')}">
+
 			<form action="<c:url value='/welcome/addProduct'/>" method="get">
 				<button class="btn btn-success" type="submit">Add Product</button>
 			</form>
@@ -51,7 +51,7 @@
 			<c:if test="${not empty errorAddingProduct}">
 				<div class='alert alert-danger'>${errorAddingProduct}</div>
 			</c:if>
-		</c:if>
+
 		<br /> 
 		<table>
 			<tr>

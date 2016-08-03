@@ -3,9 +3,7 @@ package controller;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
@@ -70,16 +68,13 @@ public class HomeController {
 		ModelAndView model = new ModelAndView();
 		Product prod = productServiceImpl.findProductById(id);
 		model.addObject("product", prod);
-
-		Product productForm = new Product();
-		m.put("productForm", productForm);
 		model.setViewName("updateProduct");
 
 		return model;
 	}
 
 	@RequestMapping(value = "/welcome/update/doUpdate", method = RequestMethod.POST)
-	public ModelAndView doUpdate(@ModelAttribute("SpringWeb") Product product, BindingResult result,
+	public ModelAndView doUpdate(@ModelAttribute("SpringWeb") Product product, @RequestParam("userId") int userId,BindingResult result,
 			RedirectAttributes redirectAttrs) {
 		
 		ModelAndView model = new ModelAndView();
@@ -91,6 +86,7 @@ public class HomeController {
 			String name = authentication.getName();
 			User user = userServiceImpl.findUserByName(name);
 			try {
+				product.setUser(user);
 				productServiceImpl.updateProduct(product,user);
 				redirectAttrs.addFlashAttribute("successAddingProduct", "Your product was successfully updated!");
 			} catch (Exception e) {
@@ -104,6 +100,67 @@ public class HomeController {
 		return model;
 	}
 	// ----------------------------------------------------------------
+	// Add product requests
+		@RequestMapping(value = "/welcome/addProduct", method = RequestMethod.GET)
+		public ModelAndView addProduct(Map<String, Object> m) {
+			ModelAndView model = new ModelAndView();
+			Product productForm = new Product();
+			m.put("productForm", productForm);
+			model.setViewName("addProduct");
+
+			return model;
+		}
+
+		@RequestMapping(value = "/welcome/register", method = RequestMethod.POST)
+		public ModelAndView registerProduct(SecurityContextHolderAwareRequestWrapper request,
+				@ModelAttribute("productForm") Product product, BindingResult result, RedirectAttributes redirectAttrs) {
+			
+			ModelAndView model = new ModelAndView();
+
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String name = authentication.getName();
+			User user = userServiceImpl.findUserByName(name);
+			product.setUser(user);  //??
+			if (result.getErrorCount() > 0 || product.getPrice() < 0 || product.getIdproduct() < 0) {
+				model.setViewName("redirect:/welcome/addProduct");
+				redirectAttrs.addFlashAttribute("invalidData", "Please introduce a valid price or a valid product ID!");
+			} else {
+				
+				List<Product> products;
+				boolean exists=productServiceImpl.productIdIsUsed(product);
+				
+				if (exists)
+					redirectAttrs.addFlashAttribute("errorProductExists", "A product whith the same ID already exists!");
+				else {
+					try {
+						productServiceImpl.addProduct(product, user);
+						redirectAttrs.addFlashAttribute("successAddingProduct", "Your product was successfully added!"); /****/
+					} catch (Exception e) {
+						System.out.println(e);
+						redirectAttrs.addFlashAttribute("errorAddingProduct", "Your product was not inserted, some errors occurred!"); /***/
+					}				
+				}
+				
+				String authorities = getAuthorities(request);
+
+				if (authorities.contains("Administrator")) {
+					products = productServiceImpl.findAllProducts();
+				} else {
+					//products = productServiceImpl.findProductsByUserId(user.getIduders());
+					products = user.getProducts();
+				}
+
+				redirectAttrs.addFlashAttribute("user", user);
+				redirectAttrs.addFlashAttribute("products", products);
+				redirectAttrs.addFlashAttribute("authorities", authorities);
+				model.setViewName("redirect:/welcome");
+
+
+			}
+			return model;
+		}
+		// -----------------------------------------------------------------
+
 	// Delete requests
 	@RequestMapping(value = "/welcome/delete", method = RequestMethod.POST)
 	public ModelAndView deleteProduct(@RequestParam("id") int id, RedirectAttributes redirectAttrs) {
@@ -129,70 +186,7 @@ public class HomeController {
 	}
 	// ---------------------------------------------------------------------
 
-	// Add product requests
-	@RequestMapping(value = "/welcome/addProduct", method = RequestMethod.GET)
-	public ModelAndView addProduct(Map<String, Object> m) {
-
-		List<User> users = userServiceImpl.findAllUsers();
-		Set<Integer> userids = userServiceImpl.getUsersIds(users);
-		ModelAndView model = new ModelAndView();
-		Product productForm = new Product();
-		m.put("productForm", productForm);
-		model.addObject("userids", userids);
-		model.setViewName("addProduct");
-
-		return model;
-	}
-
-	@RequestMapping(value = "/welcome/register", method = RequestMethod.POST)
-	public ModelAndView registerProduct(SecurityContextHolderAwareRequestWrapper request,
-			@ModelAttribute("productForm") Product product, BindingResult result, RedirectAttributes redirectAttrs) {
-		
-		ModelAndView model = new ModelAndView();
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String name = authentication.getName();
-		User user = userServiceImpl.findUserByName(name);
-		
-		if (result.getErrorCount() > 0 || product.getPrice() < 0 || product.getIdproduct() < 0) {
-			model.setViewName("redirect:/welcome/addProduct");
-			redirectAttrs.addFlashAttribute("invalidData", "Please introduce a valid price or a valid product ID!");
-		} else {
-			
-			List<Product> products;
-			boolean exists=productServiceImpl.productIdIsUsed(product);
-			
-			if (exists)
-				redirectAttrs.addFlashAttribute("errorProductExists", "A product whith the same ID already exists!");
-			else {
-				try {
-					productServiceImpl.addProduct(product, user);
-					redirectAttrs.addFlashAttribute("successAddingProduct", "Your product was successfully added!"); /****/
-				} catch (Exception e) {
-					System.out.println(e);
-					redirectAttrs.addFlashAttribute("errorAddingProduct", "Your product was not inserted, some errors occurred!"); /***/
-				}				
-			}
-			
-			String authorities = getAuthorities(request);
-
-			if (authorities.contains("Administrator")) {
-				products = productServiceImpl.findAllProducts();
-			} else {
-				products = productServiceImpl.findProductsByUserId(user.getIduders());
-			}
-
-			redirectAttrs.addFlashAttribute("user", user);
-			redirectAttrs.addFlashAttribute("products", products);
-			redirectAttrs.addFlashAttribute("authorities", authorities);
-			model.setViewName("redirect:/welcome");
-
-
-		}
-		return model;
-	}
-	// -----------------------------------------------------------------
-
+	
 
 	// login and home page request
 	@RequestMapping(value = { "/", "/hello", "/index" }, method = RequestMethod.GET)
@@ -226,7 +220,8 @@ public class HomeController {
 		if (authorities.contains("Administrator")) {
 			products = productServiceImpl.findAllProducts();
 		} else {
-			products = productServiceImpl.findProductsByUserId(user.getIduders());
+			//products = productServiceImpl.findProductsByUserId(user.getIduders());
+			products =  user.getProducts();
 		}
 
 		model.addObject("user", user);

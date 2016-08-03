@@ -1,10 +1,7 @@
 package dao;
 
 import java.util.List;
-
-import javax.persistence.NoResultException;
 import javax.sql.DataSource;
-
 import org.hibernate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -45,17 +42,8 @@ public class ProductDaoImpl implements ProductDao {
 
 	public Product findById(int idproduct) {
 			Product prod = (Product) getSession().get(Product.class, idproduct);
-			System.out.println("Sunt in try");
+			System.out.println("Sunt in findById");
 			return prod;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<Product> findByUserId(int iduser) {
-		String sql = "SELECT p FROM Product p WHERE p.iduser=:iduser";
-		Query query = getSession().createQuery(sql);
-		query.setParameter("iduser", iduser);
-		List<Product> products = (List<Product>)query.list();
-		return products;
 	}
 
 	@SuppressWarnings("unchecked")
