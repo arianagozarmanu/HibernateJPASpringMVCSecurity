@@ -35,24 +35,25 @@
 					Date: </b>${user.getLastOperationDate()}</span>
 		</div>
 		<br />
-
+		<c:if test="${fn:contains(authorities,'Administrator')}">
 			<form action="<c:url value='/welcome/addProduct'/>" method="get">
 				<button class="btn btn-success" type="submit">Add Product</button>
 			</form>
-			<br />
-			<c:if test="${not empty errorProductExists}">
-				<div class='alert alert-warning'>
-					<strong>Warning! </strong>${errorProductExists}</div>
-			</c:if>
-			<c:if test="${not empty successAddingProduct}">
-				<div class='alert alert-success'>
-					<strong>Success! </strong>${successAddingProduct}</div>
-			</c:if>
-			<c:if test="${not empty errorAddingProduct}">
-				<div class='alert alert-danger'>${errorAddingProduct}</div>
-			</c:if>
+		</c:if>
+		<br />
+		<c:if test="${not empty errorProductExists}">
+			<div class='alert alert-warning'>
+				<strong>Warning! </strong>${errorProductExists}</div>
+		</c:if>
+		<c:if test="${not empty successAddingProduct}">
+			<div class='alert alert-success'>
+				<strong>Success! </strong>${successAddingProduct}</div>
+		</c:if>
+		<c:if test="${not empty errorAddingProduct}">
+			<div class='alert alert-danger'>${errorAddingProduct}</div>
+		</c:if>
 
-		<br /> 
+		<br />
 		<table>
 			<tr>
 				<th>#ID</th>
@@ -73,23 +74,18 @@
 					<td align="right">${element.getPrice()}</td>
 
 					<td align="left">
-						<!-- <spring:url value="/welcome/delete/${element.getIdproduct()}" var="deleteUrl"/>
-						<button class="btn btn-danger"
-							onclick="location.href='${deleteUrl}'">Delete</button> -->
-
-							<form style="display:inline-block;" action="welcome/delete?id=${element.getIdproduct()}"
-								method="post">
-								<input type="submit" value="Delete" class="btn btn-danger">
-								<input type="hidden" name="${_csrf.parameterName}"
-									value="${_csrf.token}" />
-							</form>
-
-						<span>
-							<spring:url value="/welcome/update/${element.getIdproduct()}"
+						<form style="display: inline-block;"
+							action="welcome/delete?id=${element.getIdproduct()}"
+							method="post">
+							<input type="submit" value="Delete" class="btn btn-danger">
+							<input type="hidden" name="${_csrf.parameterName}"
+								value="${_csrf.token}" />
+						</form> <span> <spring:url
+								value="/welcome/update/${element.getIdproduct()}"
 								var="updateUrl" />
 							<button class="btn btn-primary"
 								onclick="location.href='${updateUrl}'">Update</button>
-						</span>
+					</span>
 					</td>
 
 				</tr>

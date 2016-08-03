@@ -61,9 +61,13 @@ public class UserServiceImpl implements UserService{
 	}
 	
 
-	@Transactional
 	public Set<Integer> getUsersIds(List<User> users) {		
 		Set<Integer> result=users.stream().map(User::getIduders).collect(Collectors.toSet());		
+		return result;
+	}
+
+	public Set<String> getUsersName(List<User> users) {		
+		Set<String> result=users.stream().map(User::getUsername).collect(Collectors.toSet());		
 		return result;
 	}
 	

@@ -1,5 +1,7 @@
 package dao;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.sql.DataSource;
 import org.hibernate.*;
@@ -12,7 +14,6 @@ import model.Product;
 @Repository(value = "productDaoImpl")
 @Transactional
 public class ProductDaoImpl implements ProductDao {
-
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -41,9 +42,9 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	public Product findById(int idproduct) {
-			Product prod = (Product) getSession().get(Product.class, idproduct);
-			System.out.println("Sunt in findById");
-			return prod;
+		Product prod = (Product) getSession().get(Product.class, idproduct);
+		System.out.println("Sunt in findById");
+		return prod;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,6 +52,8 @@ public class ProductDaoImpl implements ProductDao {
 		List<Product> listProducts = (List<Product>) getSession().createCriteria(Product.class)
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
+		listProducts.sort((e1, e2) -> Integer.compare(e1.getIdproduct(), e2.getIdproduct()));
+		
 		return listProducts;
 	}
 

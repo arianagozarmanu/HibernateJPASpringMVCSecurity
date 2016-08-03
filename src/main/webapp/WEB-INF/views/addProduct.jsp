@@ -17,29 +17,40 @@
 
 <!-- can change this -->
 <div align="center"  class="box">
-        <form:form action="register" method="post" commandName="productForm">
+        <form action="register" method="post" >
             <table border="0">
                 <tr>
                     <td colspan="2" align="center"><h2>Add New Product</h2></td>
                 </tr>
                 <tr>
                     <td>Product ID:</td>
-                    <td><form:input path="idproduct" style="background=#fff; margin-bottom:10px; margin-top:10px"/></td>
+                    <td><input name="idproduct" value="0" style="background=#fff; margin-bottom:10px; margin-top:10px"/></td>
                 </tr>
                 <tr>
                     <td>Name:</td>
-                    <td><form:input path="name" style="margin-bottom:10px;  margin-top:10px"/></td>
+                    <td><input name="name"  value="numele produsului" style="margin-bottom:10px;  margin-top:10px"/></td>
                 </tr>
                 <tr>
                     <td>Price:</td>
-                    <td><form:input path="price" style="margin-bottom:10px; margin-top:10px"/></td>
+                    <td><input name="price" value="0.0" style="margin-bottom:10px; margin-top:10px"/></td>
+                </tr>
+                 <tr>
+                    <td>User ID:</td>
+                    <td><select name="iduser"  style="margin-bottom:10px;  margin-top:10px">
+                    	
+                    	<c:forEach var="element" items="${users}">
+                     		<option value="${element.getIduders()}">${element.getUsername()}</option>
+                     	</c:forEach>
+                    </select></td>
                 </tr>
                 <tr>
                     <td colspan="2" align="center" ><input type="submit" value="Add Product" 
                     	style="background-color: #A83116; border-radius: 5px; color: white; padding: 10px 10px;  margin-top:20px"/></td>
                 </tr>
             </table>
-        </form:form>
+            <input type="hidden" name="${_csrf.parameterName }"
+				value="${_csrf.token }" />
+        </form>
     </div>
 	<c:if test="${not empty invalidData}">
 		<div class='alert alert-warning' align="center"><strong>Warning! </strong>${invalidData}</div>

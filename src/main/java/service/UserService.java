@@ -15,4 +15,5 @@ public interface UserService {
 	public void updateUser(int iduders, String username, String password, int enabled, String email, int age);
 	public void registerUser(User user);
 	public Set<Integer> getUsersIds(List<User> users);
+	public Set<String> getUsersName(List<User> users);
 }
