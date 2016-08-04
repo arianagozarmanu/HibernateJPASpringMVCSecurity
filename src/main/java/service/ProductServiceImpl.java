@@ -41,25 +41,19 @@ public class ProductServiceImpl implements ProductService {
 		productDaoImpl.update(product);		
 	}
 
-
+	@Transactional(readOnly = true)
 	public Product findProductById(int id) {
 		// TODO Auto-generated method stub
 		return  productDaoImpl.findById(id);
 	}
 
-
-//	public List<Product> findProductsByUserId(int id) {
-//		// TODO Auto-generated method stub
-//		return productDaoImpl.findByUserId(id);
-//	}
-
-
+	@Transactional(readOnly = true)
 	public List<Product> findAllProducts() {
 		// TODO Auto-generated method stub
 		return productDaoImpl.list();
 	}
 
-
+	@Transactional(readOnly = true)
 	public boolean productIdIsUsed(Product product) {
 			if(productDaoImpl.findById(product.getIdproduct())==null)
 					return false;
