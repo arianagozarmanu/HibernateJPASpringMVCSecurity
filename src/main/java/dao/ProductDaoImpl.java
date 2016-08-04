@@ -2,7 +2,6 @@ package dao;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.sql.DataSource;
 
 import org.hibernate.*;
@@ -27,7 +26,8 @@ public class ProductDaoImpl implements ProductDao {
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 	}
-
+	
+	
 	public void persist(Product product) {
 		getSession().persist(product);
 		System.out.println("Product " + product.getName() + " was added!");

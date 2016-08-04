@@ -18,33 +18,38 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	UserDao userDaoImpl;
 	
-
+	
+	@Transactional
 	public void addUser(User user) {
 		// TODO Auto-generated method stub
 		userDaoImpl.add(user);
 	}
 
-
+	@Transactional(readOnly = true)
 	public User findUserById(int id) {
 		// TODO Auto-generated method stub
 		return userDaoImpl.findById(id);
 	}
-
+	
+	@Transactional(readOnly = true)
 	public List<User> findAllUsers() {
 		// TODO Auto-generated method stub
 		return userDaoImpl.findAll();
 	}
 
+	@Transactional
 	public void deleteUserById(int id) {
 		// TODO Auto-generated method stub
 		userDaoImpl.deleteById(id);
 	}
 
+	@Transactional(readOnly = true)
 	public User findUserByName(String name) {
 		// TODO Auto-generated method stub
 		return userDaoImpl.findByName(name);
 	}
 
+	@Transactional
 	public void updateUser(int iduders, String username, String password, int enabled, String email, int age) {
 		// TODO Auto-generated method stub
 		userDaoImpl.update(iduders, username, password, enabled, email, age);
@@ -61,7 +66,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Set<Integer> getUsersIds(List<User> users) {		
 		Set<Integer> result=users.stream().map(User::getIduders).collect(Collectors.toSet());		
 		return result;
