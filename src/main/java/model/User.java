@@ -94,5 +94,9 @@ public class User implements Serializable{
 		this.age = age;
 	}
 	
+	public void setProducts(List<Product> products){
+		this.products=products;
+	}
+	
 	
 }

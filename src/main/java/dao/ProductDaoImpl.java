@@ -1,7 +1,6 @@
 package dao;
 
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.List;
 import javax.sql.DataSource;
 import org.hibernate.*;

@@ -1,12 +1,17 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import converter.DtoToPersistentConversion;
+import converter.PersistentToDtoConversion;
 import dao.*;
+import dto.ProductDTO;
+import dto.UserDTO;
 import model.*;
 import util.*;
 
@@ -20,41 +25,51 @@ public class ProductServiceImpl implements ProductService {
 	UserDao userDaoImpl;
 	
 	@Transactional(rollbackFor = Exception.class)
-	public void addProduct(Product product, User user) {
+	public void addProduct(ProductDTO product, UserDTO user) {
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
-		productDaoImpl.persist(product);		
+		Product persistentProduct=DtoToPersistentConversion.convertProductDtoToPersistentProduct(product);
+		productDaoImpl.persist(persistentProduct);		
 	}
 
 
 	@Transactional
-	public void deleteProductById(Product product, User user) {
+	public void deleteProductById(ProductDTO product, UserDTO user) {
 		// TODO Auto-generated method stub
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
-		productDaoImpl.deleteById(product);
+		Product persistentProduct=DtoToPersistentConversion.convertProductDtoToPersistentProduct(product);
+		productDaoImpl.deleteById(persistentProduct);
 	}
 
 
 	@Transactional
-	public void updateProduct(Product product, User user) {
+	public void updateProduct(ProductDTO product, UserDTO user) {
 		// TODO Auto-generated method stub
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
-		productDaoImpl.update(product);		
+		Product persistentProduct=DtoToPersistentConversion.convertProductDtoToPersistentProduct(product);
+		productDaoImpl.update(persistentProduct);		
 	}
 
 	@Transactional(readOnly = true)
-	public Product findProductById(int id) {
+	public ProductDTO findProductById(int id) {
+		Product persistentProduct = productDaoImpl.findById(id);
+		ProductDTO product = PersistentToDtoConversion.convertProductToProductDTO(persistentProduct);
+		return product;
+	}
+
+	@Transactional(readOnly = true)
+	public List<ProductDTO> findAllProducts() {
 		// TODO Auto-generated method stub
-		return  productDaoImpl.findById(id);
+		List<Product> persistentProducts=productDaoImpl.list();
+		List<ProductDTO> products=new ArrayList<ProductDTO>();
+		for(Product prod:persistentProducts){
+			ProductDTO product=PersistentToDtoConversion.convertProductToProductDTO(prod);
+			products.add(product);
+		}
+		return products;
 	}
 
 	@Transactional(readOnly = true)
-	public List<Product> findAllProducts() {
-		// TODO Auto-generated method stub
-		return productDaoImpl.list();
-	}
-
-	@Transactional(readOnly = true)
-	public boolean productIdIsUsed(Product product) {
+	public boolean productIdIsUsed(ProductDTO product) {
 			if(productDaoImpl.findById(product.getIdproduct())==null)
 					return false;
 			else return true;

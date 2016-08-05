@@ -2,16 +2,16 @@ package service;
 
 import java.util.List;
 
-import model.Product;
-import model.User;
+import dto.ProductDTO;
+import dto.UserDTO;
+
 
 public interface ProductService {
 	
-	public void addProduct(Product product, User user);
-	public void deleteProductById(Product product, User user);
-	public void updateProduct(Product product, User user) ;
-	public Product findProductById(int id);
-	//public List<Product> findProductsByUserId(int id);
-	public List<Product> findAllProducts();
-	public boolean productIdIsUsed(Product product);
+	public void addProduct(ProductDTO product, UserDTO user);
+	public void deleteProductById(ProductDTO product, UserDTO user);
+	public void updateProduct(ProductDTO product, UserDTO user) ;
+	public ProductDTO findProductById(int id);
+	public List<ProductDTO> findAllProducts();
+	public boolean productIdIsUsed(ProductDTO product);
 }

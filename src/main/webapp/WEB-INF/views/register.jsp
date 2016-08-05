@@ -18,7 +18,7 @@
 	<div class="container">
 		<h1 class="well">Registration Form</h1>
 		<div class="col-lg-12 well">
-			<div class="row">
+			<div class="row">				
 				<form:form action="registerUser" method="post"
 					commandName="userForm">
 					<div class="col-sm-12">

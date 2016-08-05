@@ -3,8 +3,6 @@ package controller;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import model.*;
+import dto.*;
 import service.*;
 
 @Controller
@@ -32,17 +30,17 @@ public class HomeController {
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
 	public ModelAndView registration(Map<String, Object> m) {
 		ModelAndView model = new ModelAndView();
-		User userForm = new User();
+		UserDTO userForm = new UserDTO();
 		m.put("userForm", userForm);
 		model.setViewName("register");
 		return model;
 	}
 
 	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-	public ModelAndView doRegistration(@ModelAttribute("SpringWeb") User user, BindingResult result,
+	public ModelAndView doRegistration(@ModelAttribute("SpringWeb") UserDTO user, BindingResult result,
 			RedirectAttributes redirectAttrs) {
 		ModelAndView model = new ModelAndView();
-
+		
 		if (result.getErrorCount() == 0 && usernameIsValid(user.getUsername()) && emailIsValid(user.getEmail())
 				&& user.getAge() > 0) {
 			try {
@@ -50,7 +48,7 @@ public class HomeController {
 				model.addObject("successRegisterMessage", "Your username and password were successfully registered!");
 				model.setViewName("login");
 			} catch (Exception e) {
-				System.out.println(e);
+				System.out.println("Exceptia din controller - register:"+e);
 				redirectAttrs.addFlashAttribute("errorRegisterMessage", "Some errors ocurred accessing the database!");
 				model.setViewName("redirect:/registration");
 			}
@@ -71,7 +69,7 @@ public class HomeController {
 	public ModelAndView updateProduct(@PathVariable("id") int id, Map<String, Object> m) {
 
 		ModelAndView model = new ModelAndView();
-		Product prod = productServiceImpl.findProductById(id);
+		ProductDTO prod = productServiceImpl.findProductById(id);
 		model.addObject("product", prod);
 		model.setViewName("updateProduct");
 
@@ -79,7 +77,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/welcome/update/doUpdate", method = RequestMethod.POST)
-	public ModelAndView doUpdate(@ModelAttribute("SpringWeb") Product product, BindingResult result,
+	public ModelAndView doUpdate(@ModelAttribute("SpringWeb") ProductDTO product, BindingResult result,
 			RedirectAttributes redirectAttrs, @RequestParam("userId") int userId) {
 
 		ModelAndView model = new ModelAndView();
@@ -89,7 +87,7 @@ public class HomeController {
 		} else {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String name = authentication.getName();
-			User user = userServiceImpl.findUserByName(name);
+			UserDTO user = userServiceImpl.findUserByName(name);
 			try {
 				product.setUser(user);
 				productServiceImpl.updateProduct(product, user);
@@ -110,10 +108,9 @@ public class HomeController {
 	// Add product requests
 	@RequestMapping(value = "/welcome/addProduct", method = RequestMethod.GET)
 	public ModelAndView addProduct(Map<String, Object> m) {
-		List<User> users = userServiceImpl.findAllUsers();
-		//Set<Integer> userids = userServiceImpl.getUsersIds(users);
+		List<UserDTO> users = userServiceImpl.findAllUsers();
 		ModelAndView model = new ModelAndView();
-		Product productForm = new Product();
+		ProductDTO productForm = new ProductDTO();
 		model.addObject("users", users);
 		m.put("productForm", productForm);
 		model.setViewName("addProduct");
@@ -123,16 +120,16 @@ public class HomeController {
 
 	@RequestMapping(value = "/welcome/register", method = RequestMethod.POST)
 	public ModelAndView registerProduct(SecurityContextHolderAwareRequestWrapper request,
-			@ModelAttribute("productForm") Product product, BindingResult result, RedirectAttributes redirectAttrs,
+			@ModelAttribute("productForm") ProductDTO product, BindingResult result, RedirectAttributes redirectAttrs,
 			@RequestParam("iduser") int iduser) {
 
 		ModelAndView model = new ModelAndView();
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String name = authentication.getName();
-		User authenticatedUser = userServiceImpl.findUserByName(name);
+		UserDTO authenticatedUser = userServiceImpl.findUserByName(name);
 
-		User selectedUserForAddingProduct = userServiceImpl.findUserById(iduser);
+		UserDTO selectedUserForAddingProduct = userServiceImpl.findUserById(iduser);
 
 		String authorities = getAuthorities(request);
 		if (authorities.contains("Administrator")) {
@@ -145,7 +142,7 @@ public class HomeController {
 			redirectAttrs.addFlashAttribute("invalidData", "Please introduce a valid price or a valid product ID!");
 		} else {
 
-			List<Product> products;
+			List<ProductDTO> products;
 			boolean exists = productServiceImpl.productIdIsUsed(product);
 
 			if (exists)
@@ -186,8 +183,8 @@ public class HomeController {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String name = authentication.getName();
-		User user = userServiceImpl.findUserByName(name);
-		Product product = productServiceImpl.findProductById(id);
+		UserDTO user = userServiceImpl.findUserByName(name);
+		ProductDTO product = productServiceImpl.findProductById(id);
 
 		try {
 			productServiceImpl.deleteProductById(product, user);
@@ -223,7 +220,7 @@ public class HomeController {
 	@RequestMapping(value = "/welcome**", method = RequestMethod.GET)
 	public ModelAndView adminPage(SecurityContextHolderAwareRequestWrapper request) {
 
-		List<Product> products = null;
+		List<ProductDTO> products = null;
 
 		String authorities = getAuthorities(request);
 		ModelAndView model = new ModelAndView();
@@ -231,7 +228,7 @@ public class HomeController {
 		// preluare id user curent
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String name = authentication.getName();
-		User user = userServiceImpl.findUserByName(name);
+		UserDTO user = userServiceImpl.findUserByName(name);
 
 		if (authorities.contains("Administrator")) {
 			products = productServiceImpl.findAllProducts();
@@ -318,7 +315,6 @@ public class HomeController {
 
 	// Validari
 	private boolean usernameIsValid(String username) {
-		System.out.println(userServiceImpl.findUserByName(username));
 		if (userServiceImpl.findUserByName(username) == null) {
 			return true;
 		} else

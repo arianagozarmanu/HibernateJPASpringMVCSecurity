@@ -1,5 +1,6 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dao.UserDao;
+import dto.UserDTO;
 import model.User;
 import util.serviceUtils;
+import converter.*;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -19,21 +22,25 @@ public class UserServiceImpl implements UserService{
 	UserDao userDaoImpl;
 	
 	@Transactional
-	public void addUser(User user) {
+	public void addUser(UserDTO user) {
 		// TODO Auto-generated method stub
-		userDaoImpl.add(user);
+		User persistentUser = DtoToPersistentConversion.convertUserDtoToPersistentUser(user);
+		userDaoImpl.add(persistentUser);
 	}
 
 	@Transactional(readOnly = true)
-	public User findUserById(int id) {
+	public UserDTO findUserById(int id) {
 		// TODO Auto-generated method stub
-		return userDaoImpl.findById(id);
+		User user =  userDaoImpl.findById(id);
+		UserDTO dtoUser = PersistentToDtoConversion.convertUserToUserDTO(user);
+		return dtoUser;
 	}
 	
 	@Transactional(readOnly = true)
-	public List<User> findAllUsers() {
+	public List<UserDTO> findAllUsers() {
 		// TODO Auto-generated method stub
-		return userDaoImpl.findAll();
+		List<UserDTO> users = getDtoUsers(userDaoImpl.findAll());
+		return users;
 	}
 	
 	@Transactional
@@ -43,9 +50,15 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Transactional(readOnly = true)
-	public User findUserByName(String name) {
+	public UserDTO findUserByName(String name) {
 		// TODO Auto-generated method stub
-		return userDaoImpl.findByName(name);
+		try{
+			User user = userDaoImpl.findByName(name);
+			return PersistentToDtoConversion.convertUserToUserDTO(user);
+		}catch(Exception e){
+			return null;
+		}
+		
 	}
 
 	@Transactional
@@ -55,25 +68,37 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Transactional
-	public void registerUser(User user) {
-		Set<Integer> usersIds = getUsersIds(userDaoImpl.findAll());
+	public void registerUser(UserDTO user) {
+		List<User> users = userDaoImpl.findAll();
+		List<UserDTO> dtoUsers = getDtoUsers(users);	
+		Set<Integer> usersIds = getUsersIds(dtoUsers);
 		user.setEnabled(1);
 		user.setIduders((Integer)usersIds.toArray()[usersIds.size()-1]+1);
 		user.setLastOperationDate(serviceUtils.getCurrentDate());
-		userDaoImpl.add(user);
-		userDaoImpl.addRole(user.getUsername(),"ROLE_USER");		
+		User persistentUser =DtoToPersistentConversion.convertUserDtoToPersistentUser(user);
+		userDaoImpl.add(persistentUser);
+		userDaoImpl.addRole(persistentUser.getUsername(),"ROLE_USER");		
 	}
 	
 	@Transactional(readOnly = true)
-	public Set<Integer> getUsersIds(List<User> users) {		
-		Set<Integer> result=users.stream().map(User::getIduders).collect(Collectors.toSet());		
+	public Set<Integer> getUsersIds(List<UserDTO> users) {		
+		Set<Integer> result=users.stream().map(UserDTO::getIduders).collect(Collectors.toSet());		
 		return result;
 	}
 	
 	@Transactional(readOnly = true)
-	public Set<String> getUsersName(List<User> users) {		
-		Set<String> result=users.stream().map(User::getUsername).collect(Collectors.toSet());		
+	public Set<String> getUsersName(List<UserDTO> users) {		
+		Set<String> result=users.stream().map(UserDTO::getUsername).collect(Collectors.toSet());		
 		return result;
 	}
 	
+	private List<UserDTO> getDtoUsers(List<User> users){
+		List<UserDTO> dtoUsers = new ArrayList<UserDTO>();
+		for(User u:users){
+			UserDTO userDto = PersistentToDtoConversion.convertUserToUserDTO(u);
+			dtoUsers.add(userDto);
+		}
+		
+		return dtoUsers;
+	}
 }
