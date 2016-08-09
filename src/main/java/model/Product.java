@@ -11,7 +11,7 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name = "idproduct", nullable = false)
-	private int idproduct;
+	private int id;
 	@Column(name = "name", nullable = false)
 	private String name;
 	@Column(name = "price", nullable = false)
@@ -25,7 +25,7 @@ public class Product implements Serializable {
 	}
 
 	public Product(int idprod, String name, double price, User user) {
-		this.idproduct = idprod;
+		this.id = idprod;
 		this.name = name;
 		this.price = price;
 		this.user = user;
@@ -40,11 +40,11 @@ public class Product implements Serializable {
 	}
 
 	public int getIdproduct() {
-		return idproduct;
+		return id;
 	}
 
 	public void setIdproduct(int idproduct) {
-		this.idproduct = idproduct;
+		this.id = idproduct;
 	}
 
 	public String getName() {

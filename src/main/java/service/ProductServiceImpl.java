@@ -13,6 +13,7 @@ import dao.*;
 import dto.ProductDTO;
 import dto.UserDTO;
 import model.*;
+import repository.ProductRepository;
 import util.*;
 
 @Service
@@ -24,11 +25,14 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired 
 	UserDao userDaoImpl;
 	
+	@Autowired
+	private ProductRepository productRepo;
+	
 	@Transactional(rollbackFor = Exception.class)
 	public void addProduct(ProductDTO product, UserDTO user) {
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
 		Product persistentProduct=DtoToPersistentConversion.convertProductDtoToPersistentProduct(product);
-		productDaoImpl.persist(persistentProduct);		
+		productRepo.save(persistentProduct);		
 	}
 
 
@@ -37,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 		// TODO Auto-generated method stub
 		userDaoImpl.insertLastActionDate(serviceUtils.getCurrentDate(), user.getIduders());
 		Product persistentProduct=DtoToPersistentConversion.convertProductDtoToPersistentProduct(product);
-		productDaoImpl.deleteById(persistentProduct);
+		productRepo.delete(persistentProduct);
 	}
 
 

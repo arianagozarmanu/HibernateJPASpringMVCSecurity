@@ -93,7 +93,7 @@ public class UserDaoImpl implements UserDao {
 		query.setParameter("date", date);
 		query.setParameter("iduser", id);
 		int rows = query.executeUpdate();
-		System.out.println(rows + " row(s) updated with new data in User Table.");
+		System.out.println(rows + " row(s) updated with new Last Action Date.");
 	}
 
 }
