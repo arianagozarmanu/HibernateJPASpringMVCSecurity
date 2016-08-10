@@ -12,7 +12,7 @@ public class User implements Serializable{
 	
 	@Id
 	@Column(name="idusers", nullable=false)
-	private int iduders;
+	private int id;
 	@Column(name="username", nullable=false)
 	private String username;
 	@Column(name="password", nullable=false)
@@ -33,7 +33,7 @@ public class User implements Serializable{
 	}
 	
 	public User(int iduders, String username, String password, int enabled, String email, int age, java.util.Date date) {
-		this.iduders = iduders;
+		this.id = iduders;
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;
@@ -58,10 +58,10 @@ public class User implements Serializable{
 	}
 
 	public int getIduders() {
-		return iduders;
+		return id;
 	}
 	public void setIduders(int iduders) {
-		this.iduders = iduders;
+		this.id = iduders;
 	}
 	public String getUsername() {
 		return username;

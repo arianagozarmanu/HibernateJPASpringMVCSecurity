@@ -9,29 +9,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dao.UserDao;
 import dto.UserDTO;
 import model.User;
+import repository.UserRepository;
 import util.serviceUtils;
 import converter.*;
 
 @Service
 public class UserServiceImpl implements UserService{
-
+	
 	@Autowired
-	UserDao userDaoImpl;
+	private UserRepository userRepo;
 	
 	@Transactional
 	public void addUser(UserDTO user) {
 		// TODO Auto-generated method stub
 		User persistentUser = DtoToPersistentConversion.convertUserDtoToPersistentUser(user);
-		userDaoImpl.add(persistentUser);
+		userRepo.save(persistentUser);
 	}
 
 	@Transactional(readOnly = true)
 	public UserDTO findUserById(int id) {
 		// TODO Auto-generated method stub
-		User user =  userDaoImpl.findById(id);
+		User user =  userRepo.findById(id);
 		UserDTO dtoUser = PersistentToDtoConversion.convertUserToUserDTO(user);
 		return dtoUser;
 	}
@@ -39,45 +39,42 @@ public class UserServiceImpl implements UserService{
 	@Transactional(readOnly = true)
 	public List<UserDTO> findAllUsers() {
 		// TODO Auto-generated method stub
-		List<UserDTO> users = getDtoUsers(userDaoImpl.findAll());
+		List<UserDTO> users = getDtoUsers(userRepo.findAll());
 		return users;
 	}
 	
 	@Transactional
-	public void deleteUserById(int id) {
+	public void deleteUser(UserDTO user) {
 		// TODO Auto-generated method stub
-		userDaoImpl.deleteById(id);
+		User persistentUser = DtoToPersistentConversion.convertUserDtoToPersistentUser(user);
+		userRepo.delete(persistentUser);
 	}
 
 	@Transactional(readOnly = true)
 	public UserDTO findUserByName(String name) {
-		// TODO Auto-generated method stub
-		try{
-			User user = userDaoImpl.findByName(name);
-			return PersistentToDtoConversion.convertUserToUserDTO(user);
-		}catch(Exception e){
+		if(userRepo.findByUsername(name)==null)
 			return null;
-		}
-		
+		else
+			return PersistentToDtoConversion.convertUserToUserDTO(userRepo.findByUsername(name));
 	}
 
 	@Transactional
-	public void updateUser(int iduders, String username, String password, int enabled, String email, int age) {
-		// TODO Auto-generated method stub
-		userDaoImpl.update(iduders, username, password, enabled, email, age);
+	public void updateUser(UserDTO user) {
+		User persistentUser = DtoToPersistentConversion.convertUserDtoToPersistentUser(user);
+		userRepo.save(persistentUser);
 	}
 
 	@Transactional
 	public void registerUser(UserDTO user) {
-		List<User> users = userDaoImpl.findAll();
+		List<User> users = userRepo.findAll();
 		List<UserDTO> dtoUsers = getDtoUsers(users);	
 		Set<Integer> usersIds = getUsersIds(dtoUsers);
 		user.setEnabled(1);
 		user.setIduders((Integer)usersIds.toArray()[usersIds.size()-1]+1);
 		user.setLastOperationDate(serviceUtils.getCurrentDate());
 		User persistentUser =DtoToPersistentConversion.convertUserDtoToPersistentUser(user);
-		userDaoImpl.add(persistentUser);
-		userDaoImpl.addRole(persistentUser.getUsername(),"ROLE_USER");		
+		userRepo.save(persistentUser);
+		userRepo.addRole(persistentUser.getUsername(),"ROLE_USER");		
 	}
 	
 	@Transactional(readOnly = true)
