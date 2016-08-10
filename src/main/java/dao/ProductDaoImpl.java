@@ -42,7 +42,6 @@ public class ProductDaoImpl implements ProductDao {
 
 	public Product findById(int idproduct) {
 		Product prod = (Product) getSession().get(Product.class, idproduct);
-		System.out.println("Sunt in findById");
 		return prod;
 	}
 

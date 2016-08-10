@@ -48,7 +48,6 @@ public class HomeController {
 				model.addObject("successRegisterMessage", "Your username and password were successfully registered!");
 				model.setViewName("login");
 			} catch (Exception e) {
-				System.out.println("Exceptia din controller - register:"+e);
 				redirectAttrs.addFlashAttribute("errorRegisterMessage", "Some errors ocurred accessing the database!");
 				model.setViewName("redirect:/registration");
 			}
@@ -235,7 +234,6 @@ public class HomeController {
 		} else {
 			products = user.getProducts();
 		}
-		System.out.println(products);
 		model.addObject("user", user);
 		model.addObject("products", products);
 		model.addObject("authorities", authorities);
