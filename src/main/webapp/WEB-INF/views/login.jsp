@@ -17,8 +17,7 @@
 
 </head>
 
-<body onload='document.loginForm.username.focus();'
-	background="<c:url value='/resources/images/back.jpg'/>" >
+<body background="<c:url value='/resources/images/back.jpg'/>" >
 
 		<div class="login">
 			<form action="<c:url value='/login' />" method="post">

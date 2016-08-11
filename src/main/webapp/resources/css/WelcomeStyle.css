@@ -1,9 +1,23 @@
 #header {
-	background-color: #E9FFB8;
+	background-color: #ffffff;
 	color: #231580;
 	text-align: center;
-	padding: 5px;
-	height: 130px;
+	width:100%;
+	padding:5px;
+	border-style: solid;
+    border-top: thick dotted #800080;
+    border-bottom: thick dotted #800080;
+    border-left:none;
+    border-right:none;
+}
+
+#footer {
+	background-color: #ffffff;
+	text-align: center;
+	width:auto;
+	padding:7px;
+	border-style: solid;
+    border: thick dotted #800080;
 }
 
 #myModal {
@@ -12,8 +26,16 @@ outline: none;
 }
 
 .modal-header {
-  	background-color: #b63721;
+  	background-color: #B0045A;
 }
+
+.carousel-inner .active.left { left: -16.7%; }
+.carousel-inner .next        { left:  16.7%; }
+.carousel-inner .prev        { left: -16.7%; }
+.carousel-control.left,.carousel-control.right {background-image:none;}
+.item:not(.prev) {visibility: visible;}
+.item.right:not(.prev) {visibility: hidden;}
+.rightest{ visibility: visible;}
 
 h4 { color:white; }
 
@@ -44,6 +66,9 @@ th {
 	vertical-align:middle;
 }
 
+td {
+	background-color: #ffffff;
+}
 a:link, a:visited {
 	color: #042085;
 	text-decoration: none;

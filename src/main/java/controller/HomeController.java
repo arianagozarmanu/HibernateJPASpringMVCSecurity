@@ -56,7 +56,7 @@ public class HomeController {
 				redirectAttrs.addFlashAttribute("errorRegisterMessage",
 						"This username was already taken. Please try another one!");
 			else
-				redirectAttrs.addFlashAttribute("errorRegisterMessage", "Introduce a valid email or age!");
+				redirectAttrs.addFlashAttribute("errorRegisterMessage", "Introduce a valid email!");
 			model.setViewName("redirect:/registration");
 		}
 

@@ -18,23 +18,23 @@
 	<!-- can change this -->
 	<div align="center" class="box">
 		<form action="register" method="post">
-			<table border="">
+			<table border="0">
 				<tr>
 					<td colspan="2" align="center"><h2>Add New Product</h2></td>
 				</tr>
 				<tr>
 					<td>Product ID:</td>
-					<td><input name="idproduct" value="0"
+					<td><input name="idproduct" value="0" type="number" required
 						style="margin-bottom: 10px; margin-top: 10px" /></td>
 				</tr>
 				<tr>
 					<td>Name:</td>
-					<td><input name="name" value="numele produsului"
+					<td><input name="name" value="numele produsului" type="text" required
 						style="margin-bottom: 10px; margin-top: 10px" /></td>
 				</tr>
 				<tr>
 					<td>Price:</td>
-					<td><input name="price" value="0.0"
+					<td><input name="price" value="0.0" type="number" min="0" step="0.01" required
 						style="margin-bottom: 10px; margin-top: 10px" /></td>
 				</tr>
 				<tr>
@@ -61,8 +61,9 @@
 		<div class='alert alert-warning' align="center">
 			<strong>Warning! </strong>${invalidData}</div>
 	</c:if>
-	
-<script type="text/javascript"
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
 	src="<c:url value="/resources/bootstrap/bootstrap.min.js"/>"></script>
 </body>
 

@@ -27,12 +27,12 @@
 				</tr>
 				<tr>
 					<td>Name:</td>
-					<td><input name="name" value="${product.getName()}"
+					<td><input name="name" value="${product.getName()}" 
 						style="margin-top: 10px; margin-bottom: 10px" /></td>
 				</tr>
 				<tr>
 					<td>Price:</td>
-					<td><input name="price" value="${product.getPrice()}" /></td>
+					<td><input name="price" value="${product.getPrice()}" type="number" min="0" step="0.01" required/></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><input type="submit"
@@ -51,7 +51,9 @@
 			<strong>Warning! </strong>${invalidData}</div>
 	</c:if>
 
-<script type="text/javascript"
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
 	src="<c:url value="/resources/bootstrap/bootstrap.min.js"/>"></script>
 </body>
 

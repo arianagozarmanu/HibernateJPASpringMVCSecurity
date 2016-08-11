@@ -19,22 +19,31 @@
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <title>Home</title>
 </head>
-<body>
+<body background="<c:url value='/resources/images/flower.jpg'/>"  style="background-size:cover;" >
 
-	<br />
-	<br />
-	<br />
-	<br />
-	<br />
-
-	<div id="header">
-		<h1>Hello ${pageContext.request.userPrincipal.name}</h1>
+	<div>
+	<c:if test="${pageContext.request.userPrincipal.name != null}">
+		<div style="text-align: right; padding-right:50px; padding-top:50px; padding-bottom:30px;" >
+			<a href="javascript:document.getElementById('logout').submit()" style="background-color: #ffffff"><b>LOGOUT</b></a>
+		</div>
+	</c:if>
+	</div>
+	
+	<div id="header" class="container">
+		<h1 style="font-family:'Comic Sans MS', cursive, sans-serif; font-size:450%;">Hello ${pageContext.request.userPrincipal.name}</h1>
 		<span style="float: right; margin-right: 10%"><b>Your
 				authorities: </b>${authorities}</span> <span
 			style="float: left; margin-left: 10%"><b>Last Action Date:
-		</b>${user.getLastOperationDate()}</span>
+		</b><span id="demo"></span></span>
+		
+		<script>
+			var date = new Date("${user.getLastOperationDate()}");
+			var str = date.toGMTString();
+			console.log(str);
+			document.getElementById("demo").innerHTML = str;
+		</script>
 	</div>
-	<br />
+	<br /><br /><br />
 	<c:if test="${fn:contains(authorities,'Administrator')}">
 		<form action="<c:url value='/welcome/addProduct'/>" method="get">
 			<button class="btn btn-success" type="submit">Add Product</button>
@@ -54,7 +63,8 @@
 	</c:if>
 
 	<br />
-	<table>
+	<div class="table-responsive">
+	<table class="table" style="border-collapse: collapse; width: 52%; !important;">
 		<tr>
 			<th style="padding: 15px;">#ID</th>
 			<th style="padding: 15px;">Name</th>
@@ -96,7 +106,7 @@
 
 				<td align="left" style="padding: 15px;">
 					<button type="button" class="btn btn-danger" data-toggle="modal"
-							data-target="#myModal" onclick="getElements(<%=counter%>)">Delete</button> 
+							data-target="#myModal" onclick="getElements(<%=counter%>)" style="background-color: #B0045A; !important">Delete</button> 
 				<span> <spring:url
 							value="/welcome/update/${element.getIdproduct()}" var="updateUrl" />
 					<button class="btn btn-primary"
@@ -107,28 +117,29 @@
 			</tr>
 		</c:forEach>
 	</table>
-
+	</div>
+	<br />
 	<br />
 	<%
 		String message = "You have " + counter + " rows in your table :)";
-		out.write("<br/><font color=#A300E3>" + message + "</font>");
 	%>
-	<br />
-	<br />
-	<br />
-	<div class="container">
-		<img src="<c:url value="/resources/images/summer.jpg"/>" height="304"
-			width="342" /> <img class="middle-img"
-			src="<c:url value="/resources/images/hellosum2.jpg"/>" height="304"
-			width="342" /> <img
-			src="<c:url value="/resources/images/sumgirl.jpg"/>" height="304"
-			width="342" />
+	<div>
+		<p style="color: #A300E3; background-color: #ffffff; width: 30%; display: inline-block;">
+			<%out.write(message); %>
+		</p>
 	</div>
-
-
-
 	<br />
+	<br />
+	<br />
+	
 
+	<div class="container"  id="footer" style=" margin-bottom:100px">
+		<img src="<c:url value="/resources/images/hellosum3.jpg"/>" height="258" width="252" />
+		<img src="<c:url value="/resources/images/summer.jpg"/>" height="258" width="252" />
+		<img class="middle-img" src="<c:url value="/resources/images/hellosum2.jpg"/>" height="258" width="252" /> 
+		<img src="<c:url value="/resources/images/sumgirl.jpg"/>" height="258" width="252" />
+		<img src="<c:url value="/resources/images/hellosum4.jpg"/>" height="258" width="252" />
+	</div>
 
 	<c:url value="/logout" var="logoutUrl" />
 
@@ -138,11 +149,7 @@
 			value="${_csrf.token}" />
 	</form>
 
-	<c:if test="${pageContext.request.userPrincipal.name != null}">
-		<div style="text-align: center;">
-			<a href="javascript:document.getElementById('logout').submit()"><b>LOGOUT</b></a>
-		</div>
-	</c:if>
+
 
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog modal-sm">
@@ -166,7 +173,7 @@
 			</div>
 
 		</div>
-	</div>
+	</div> 
 
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -174,5 +181,6 @@
 	src="<c:url value="/resources/bootstrap/bootstrap.min.js"/>"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/javascript/welcomePage.js"/>"></script>
+	
 </body>
 </html>

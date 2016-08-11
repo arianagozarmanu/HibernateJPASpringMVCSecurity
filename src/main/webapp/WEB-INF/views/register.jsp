@@ -37,7 +37,7 @@
 
 						<div class="form-group">
 							<label>Email Address</label>
-							<form:input path="email" type="text"
+							<form:input path="email" type="email"
 								placeholder="Enter Email Address Here.." class="form-control" />
 						</div>
 						<div class="form-group">
@@ -59,7 +59,9 @@
 	</c:if>
 	</div>
 
-<script type="text/javascript"
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script
 	src="<c:url value="/resources/bootstrap/bootstrap.min.js"/>"></script>
 </body>
 
