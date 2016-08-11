@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -10,11 +10,11 @@
 	href="<c:url value="/resources/css/RegisterStyle.css"/>">
 <link href="<c:url value='/resources/bootstrap/bootstrap.min.css' />"
 	type="text/css" rel="stylesheet">
-<script type="text/javascript"
-	src="/resources/bootstrap/bootstrap.min.js"></script>
 <title>Register Page</title>
 </head>
+
 <body background="<c:url value='/resources/images/back.jpg'/>">
+<br /><br /><br /><br />
 	<div class="container">
 		<h1 class="well">Registration Form</h1>
 		<div class="col-lg-12 well">
@@ -51,11 +51,16 @@
 			</div>
 		</div>
 	</div>
-	<center>
+	<div style="width:700px; margin:0 auto;">
 	<c:if test="${not empty errorRegisterMessage}">
-		<div class='alert alert-warning' >
-			<strong>Warning! </strong>${errorRegisterMessage}</div>
+		<div class='alert alert-warning' style="text-align:center !important;">
+			<strong>Warning! </strong>${errorRegisterMessage}
+		</div>
 	</c:if>
-	</center>
+	</div>
+
+<script type="text/javascript"
+	src="<c:url value="/resources/bootstrap/bootstrap.min.js"/>"></script>
 </body>
+
 </html>

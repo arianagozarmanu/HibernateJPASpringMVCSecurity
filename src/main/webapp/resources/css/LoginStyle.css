@@ -18,6 +18,8 @@ body {
 	transform: translate(0.5%, 50%);
 	background-image: radial-gradient(cover, rgba(92, 100, 111, 1) 0%,
 		rgba(31, 35, 40, 1) 100%), url('http://i.minus.com/io97fW9I0NqJq.png')
+    margin:50px 0px; padding:0px;
+    text-align:center;
 }
 
 .login {
@@ -126,7 +128,7 @@ input[type="submit"] {
 	text-align: center;
 	text-shadow: 1px 1px 0px #37a69b;
 	padding-top: 8px;
-	margin: 20px 0 0 10px;
+	margin: 20px 0 0 30px;
 	position: relative;
 	cursor: pointer;
 	border: none;

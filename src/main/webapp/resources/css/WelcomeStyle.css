@@ -6,23 +6,42 @@
 	height: 130px;
 }
 
+#myModal {
+top:25%;
+outline: none;
+}
+
+.modal-header {
+  	background-color: #b63721;
+}
+
+h4 { color:white; }
+
+body {
+    text-align:center;
+}
+
 table, th, td {
 	border: 1px solid #ddd;
+	margin: auto;
 }
 
 table {
 	border-collapse: collapse;
 	width: 50%;
+	
 }
 
 th, td {
-	padding: 15px;
+	height: 50px;
+	padding: 10px;
 }
 
 th {
 	background-color: #4F0C8F;
 	color: white;
-	text-align: center;
+	text-align:center;
+	vertical-align:middle;
 }
 
 a:link, a:visited {
