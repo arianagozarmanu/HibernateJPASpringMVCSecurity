@@ -190,8 +190,7 @@ public class HomeController {
 			redirectAttrs.addFlashAttribute("successAddingProduct", "Your product was successfully deleted!");
 		} catch (Exception e) {
 			System.out.println(e);
-			redirectAttrs.addFlashAttribute("errorAddingProduct",
-					"Your product was not deleted, some errors occurred!");
+			redirectAttrs.addFlashAttribute("errorAddingProduct","Your product was not deleted, some errors occurred!");
 		}
 
 		model.setViewName("redirect:/welcome");

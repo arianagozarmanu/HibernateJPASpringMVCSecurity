@@ -21,6 +21,7 @@
 </head>
 <body background="<c:url value='/resources/images/flower.jpg'/>"  style="background-size:cover;" >
 
+<!-- LOGOUT -->
 	<div>
 	<c:if test="${pageContext.request.userPrincipal.name != null}">
 		<div style="text-align: right; padding-right:50px; padding-top:50px; padding-bottom:30px;" >
@@ -28,7 +29,8 @@
 		</div>
 	</c:if>
 	</div>
-	
+
+<!-- HEADER -->
 	<div id="header" class="container">
 		<h1 style="font-family:'Comic Sans MS', cursive, sans-serif; font-size:450%;">Hello ${pageContext.request.userPrincipal.name}</h1>
 		<span style="float: right; margin-right: 10%"><b>Your
@@ -50,6 +52,8 @@
 		</form>
 	</c:if>
 	<br />
+
+<!-- ERROR / WARNING / SUCCESS MESSAGES-->
 	<c:if test="${not empty errorProductExists}">
 		<div class='alert alert-warning'>
 			<strong>Warning! </strong>${errorProductExists}</div>
@@ -63,8 +67,10 @@
 	</c:if>
 
 	<br />
+
+<!-- TABLE OF PRODUCTS -->
 	<div class="table-responsive">
-	<table class="table" style="border-collapse: collapse; width: 52%; !important;">
+	<table class="table" id="myTable" style="border-collapse: collapse; width: 52%; !important;">
 		<tr>
 			<th style="padding: 15px;">#ID</th>
 			<th style="padding: 15px;">Name</th>
@@ -76,6 +82,7 @@
 		%>
 		<c:forEach var="element" items="${products}" varStatus="index">
 			
+			<!-- CREATE JAVASCRIPT LIST -->
 			<script type="text/javascript">
 				var productList = new Array();
 			</script>
@@ -94,8 +101,11 @@
 				
 
 				document.getElementById("delete-form").action="welcome/delete?id="+id;
+				//document.getElementById("delete-form").onsubmit="return document.getElementById('myTable').deleteRow(rowId);";
 			}
-			</script>			
+			</script>
+			
+			<!-- CREATE TABLE CONTENT -->			
 			<tr>
 				<%
 					counter = counter + 1;
@@ -107,11 +117,9 @@
 				<td align="left" style="padding: 15px;">
 					<button type="button" class="btn btn-danger" data-toggle="modal"
 							data-target="#myModal" onclick="getElements(<%=counter%>)" style="background-color: #B0045A; !important">Delete</button> 
-				<span> <spring:url
-							value="/welcome/update/${element.getIdproduct()}" var="updateUrl" />
-					<button class="btn btn-primary"
-							onclick="location.href='${updateUrl}'">Update</button>
-				</span>
+					<span> <spring:url value="/welcome/update/${element.getIdproduct()}" var="updateUrl" />
+						   <button class="btn btn-primary" onclick="location.href='${updateUrl}'">Update</button>
+					</span>
 				</td>
 
 			</tr>
@@ -132,7 +140,7 @@
 	<br />
 	<br />
 	
-
+<!-- IMAGES -->
 	<div class="container"  id="footer" style=" margin-bottom:100px">
 		<img src="<c:url value="/resources/images/hellosum3.jpg"/>" height="258" width="252" />
 		<img src="<c:url value="/resources/images/summer.jpg"/>" height="258" width="252" />
@@ -140,9 +148,9 @@
 		<img src="<c:url value="/resources/images/sumgirl.jpg"/>" height="258" width="252" />
 		<img src="<c:url value="/resources/images/hellosum4.jpg"/>" height="258" width="252" />
 	</div>
-
+	
+<!-- LOGOUT FORM -->
 	<c:url value="/logout" var="logoutUrl" />
-
 	<!-- csrt for log out-->
 	<form id="logout" action="${logoutUrl}" method="post">
 		<input type="hidden" name="${_csrf.parameterName}"
@@ -150,7 +158,7 @@
 	</form>
 
 
-
+<!-- DELETE MODAL -->
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog modal-sm">
 			<!-- Modal content-->
@@ -163,24 +171,24 @@
 					<p align="center">Are you sure you want to delete this content?</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					<form id="delete-form" style="display: inline-block;" method="post">
-						<input type="submit" value="Delete" class="btn btn-default">
+						<input type="submit" value="Yes" class="btn btn-default">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" />
 					</form>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 
 		</div>
 	</div> 
 
+<!-- SCRIPTS -->
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script
 	src="<c:url value="/resources/bootstrap/bootstrap.min.js"/>"></script>
 <script type="text/javascript"
-	src="<c:url value="/resources/javascript/welcomePage.js"/>"></script>
-	
+	src="<c:url value="/resources/javascript/welcomePage.js"/>"></script>	
 </body>
 </html>
