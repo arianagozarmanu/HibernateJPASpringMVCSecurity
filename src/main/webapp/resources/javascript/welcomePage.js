@@ -22,7 +22,7 @@ $(document).ready(function() {
 					alert('Delete was not done!');
 				}
 			},
-		 error:  function(error) { console.log(error);}
+			error:  function(error) { console.log(error);}
 		});
 
 	});
