@@ -1,8 +1,13 @@
 package controller;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.google.gson.Gson;
 
 import dto.*;
 import service.*;
@@ -196,6 +203,39 @@ public class HomeController {
 		model.setViewName("redirect:/welcome");
 
 		return model;
+	}
+	
+	// Delete requests
+	@RequestMapping(value = "/welcome/delete2", method = RequestMethod.POST)
+	public void deleteProductJson(@RequestParam("id") int id, HttpServletResponse response) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		UserDTO user = userServiceImpl.findUserByName(name);
+		ProductDTO product = productServiceImpl.findProductById(id);
+		
+		System.out.println("am intrat");
+		Map<String,Object> jsonObjs = new HashMap<>();
+		boolean isValid = false;
+		try {
+			productServiceImpl.deleteProductById(product, user);
+			isValid=true;
+			jsonObjs.put("message","Delete was done successfully!");
+		} catch (Exception e) {
+			System.out.println(e);
+			jsonObjs.put("message","Delete was not done successfully!");
+		}
+
+		jsonObjs.put("isValid",isValid);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		try {
+			response.getWriter().write(new Gson().toJson(jsonObjs));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+		}
+
 	}
 	// ---------------------------------------------------------------------
 

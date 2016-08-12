@@ -34,8 +34,8 @@
 	<div id="header" class="container">
 		<h1 style="font-family:'Comic Sans MS', cursive, sans-serif; font-size:450%;">Hello ${pageContext.request.userPrincipal.name}</h1>
 		<span style="float: right; margin-right: 10%"><b>Your
-				authorities: </b>${authorities}</span> <span
-			style="float: left; margin-left: 10%"><b>Last Action Date:
+				authorities: </b>${authorities}</span> 
+		<span style="float: left; margin-left: 10%"><b>Last Action Date:
 		</b><span id="demo"></span></span>
 		
 		<script>
@@ -55,17 +55,20 @@
 
 <!-- ERROR / WARNING / SUCCESS MESSAGES-->
 	<c:if test="${not empty errorProductExists}">
-		<div class='alert alert-warning'>
+		<div id="productMessage" class='alert alert-warning'>
 			<strong>Warning! </strong>${errorProductExists}</div>
 	</c:if>
 	<c:if test="${not empty successAddingProduct}">
-		<div class='alert alert-success'>
+		<div id="productMessage" class='alert alert-success'>
 			<strong>Success! </strong>${successAddingProduct}</div>
 	</c:if>
 	<c:if test="${not empty errorAddingProduct}">
-		<div class='alert alert-danger'>${errorAddingProduct}</div>
+		<div id="productMessage" class='alert alert-danger'>${errorAddingProduct}</div>
 	</c:if>
-
+	
+	<!-- Ajax stuff -->
+	<div id="displayAlert"></div>
+	
 	<br />
 
 <!-- TABLE OF PRODUCTS -->
@@ -87,22 +90,21 @@
 				var productList = new Array();
 			</script>
 			<script type="text/javascript">
-			productList[<c:out value="${index.index}"/>] = { 
-					'productId' : '<c:out value="${element.getIdproduct()}"/>',
-					'productName' : '<c:out value="${element.getName()}"/>',
-					'productPrice' : '<c:out value="${element.getPrice()}"/>'
-			};
-			
-			
-			function getElements(rowId) {
-				var id = productList[rowId-1].productId;
-				var name = productList[rowId-1].productName;
-				var price = productList[rowId-1].productPrice;
+				productList[<c:out value="${index.index}"/>] = { 
+						'productId' : '<c:out value="${element.getIdproduct()}"/>',
+						'productName' : '<c:out value="${element.getName()}"/>',
+						'productPrice' : '<c:out value="${element.getPrice()}"/>'
+				};
 				
-
-				document.getElementById("delete-form").action="welcome/delete?id="+id;
-				//document.getElementById("delete-form").onsubmit="return document.getElementById('myTable').deleteRow(rowId);";
-			}
+				
+				function setProductId(rowId) {
+					
+					var id = productList[rowId-1].productId;
+					
+					document.getElementById("hiddenProductTableId").value=rowId;
+					document.getElementById("hiddenProductId").value=id;
+					document.getElementById("delete-form").action="welcome/delete?id="+id;
+				}
 			</script>
 			
 			<!-- CREATE TABLE CONTENT -->			
@@ -116,7 +118,8 @@
 
 				<td align="left" style="padding: 15px;">
 					<button type="button" class="btn btn-danger" data-toggle="modal"
-							data-target="#myModal" onclick="getElements(<%=counter%>)" style="background-color: #B0045A; !important">Delete</button> 
+							data-target="#myModal" onclick="setProductId(<%=counter%>)" style="background-color: #B0045A; !important">Delete</button>
+					<input type="hidden" id="hiddenProductTableId"/> 
 					<span> <spring:url value="/welcome/update/${element.getIdproduct()}" var="updateUrl" />
 						   <button class="btn btn-primary" onclick="location.href='${updateUrl}'">Update</button>
 					</span>
@@ -171,12 +174,19 @@
 					<p align="center">Are you sure you want to delete this content?</p>
 				</div>
 				<div class="modal-footer">
-					<form id="delete-form" style="display: inline-block;" method="post">
-						<input type="submit" value="Yes" class="btn btn-default">
-						<input type="hidden" name="${_csrf.parameterName}"
-							value="${_csrf.token}" />
-					</form>
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<div align="center">
+						<form id="delete-form" style="display: inline-block;" method="post">
+							<input type="submit" value="Delete Form" class="btn btn-default"/>
+							<input id="csrf-input" type="hidden" name="${_csrf.parameterName}"
+								value="${_csrf.token}" />
+						</form>
+						<button type="button" id="delete-button-form" class="btn btn-default" data-dismiss="modal">Delete Ajax</button>
+						<input type="hidden" id="hiddenProductId"/>
+					</div>
+					<br />
+					<div align="center">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
 				</div>
 			</div>
 
